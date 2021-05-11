@@ -100,26 +100,26 @@ int calibration(string path, cv::Size size, float cube_size){
         }
             
         // Convert to grayscale
-        cv::Mat gray;
-        cv::cvtColor(frame, gray, CV_BGR2GRAY);
+        // cv::Mat gray;
+        // cv::cvtColor(frame, gray, CV_BGR2GRAY);
             
         // Detect a chessboard
         //cv::Size size(PAT_COLS, PAT_ROWS);
         std::vector<cv::Point2f> corners;
-        bool found = cv::findChessboardCorners(gray, size, corners, cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_NORMALIZE_IMAGE | cv::CALIB_CB_FAST_CHECK);
+        bool found = cv::findChessboardCorners(frame, size, corners, cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_NORMALIZE_IMAGE | cv::CALIB_CB_FAST_CHECK);
             
         // Chessboard detected
         int key = 0;
         if (found) {
             // Draw it
-            cv::drawChessboardCorners(frame, size, corners, found);
+            // cv::drawChessboardCorners(frame, size, corners, found);
                 
             // collect image from stream
             //if (key == 32) { //space
             //    // Add to buffer
             //    images.push_back(gray);
             //}
-            images.push_back(gray);
+            images.push_back(frame);
         }
             
         //// Show the image
@@ -138,9 +138,11 @@ int calibration(string path, cv::Size size, float cube_size){
         std::vector< std::vector<cv::Point3f> > corners3D;
             
         for (size_t i = 0; i < images.size(); i++) {
+            cout << 1 << endl;
             // Detect a chessboard
             std::vector<cv::Point2f> tmp_corners2D;
             bool found = cv::findChessboardCorners(images[i], size, tmp_corners2D);
+            cout << found << endl;
                 
             // Chessboard detected
             if (found) {
@@ -164,6 +166,7 @@ int calibration(string path, cv::Size size, float cube_size){
         cv::Mat cameraMatrix, distCoeffs;
         std::vector<cv::Mat> rvec, tvec;
         cv::calibrateCamera(corners3D, corners2D, images[0].size(), cameraMatrix, distCoeffs, rvec, tvec);
+        cout << '123' << endl;
         std::cout << cameraMatrix << std::endl;
         std::cout << distCoeffs << std::endl;
             
